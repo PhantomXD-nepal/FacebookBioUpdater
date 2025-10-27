@@ -3,6 +3,7 @@
 import csv
 import random
 from BioUpdater import update_facebook_bio
+import time
 
 def get_quotes(csv_file_path, max_length=100, max_attempts=100):
     try:
@@ -36,7 +37,9 @@ def get_quotes(csv_file_path, max_length=100, max_attempts=100):
     
 if __name__ == "__main__":
     quote = get_quotes('quotes.csv')
-    
-    if quote:
-        print(quote)
-        update_facebook_bio(quote, publish_story=False)
+    while True:
+        if quote:
+            print(quote)
+            update_facebook_bio(quote, publish_story=False)
+        
+        time.sleep(120)
