@@ -2,3 +2,5 @@
 .env
 request.txt
 tokens.py
+extracted_tokens.json
+__pycache__

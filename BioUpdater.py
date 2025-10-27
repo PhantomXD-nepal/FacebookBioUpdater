@@ -2,55 +2,22 @@ import requests
 import json
 import time
 
-# ============================================
-# CONFIGURATION - UPDATE THESE VALUES
-# ============================================
+from tokens import * 
 
-# Your new bio text
-BIO_TEXT = "Never look back if you have nothing to regret."
+BIO_TEXT = "A Rock Doesnt Need Protection From The Rain."
 
-# Cookie string (copy from your browser)
-COOKIE = "datr=YVytaAw85zvjs97TBwdp_8wB; sb=YVytaLLsqtAAyX3TeaTkVJfj; ps_l=1; ps_n=1; c_user=100055973888921; dpr=1.25; fr=1uUxDcdEe8WTotqST.AWeA860YpoucMQbxkAExEMbmV7G1JTbmw82OAWT6hLSmic2rfEQ.Bo_thL..AAA.0.0.Bo_thL.AWdFeXI8rMIqSqTnBEJCSxcC-Sc; xs=6%3A9r8bE9ehflWW6Q%3A2%3A1756191949%3A-1%3A-1%3A%3AAcWtT5OpLIYPnEvCAjAI6T5GPYq7eq0FUlECrvb-1jeH; presence=C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1761532200493%2C%22v%22%3A1%7D; wd=994x803"
-
-# Your user ID (c_user from cookie)
 USER_ID = "100055973888921"
 
-# Facebook tokens (these expire, you'll need to update them)
-FB_DTSG = "NAfttI_dm3-7e9NQRHXhlBGPQyja-Vo3PxKmjmNDNqNOH8GX4N62Q1A:6:1756191949"
-X_FB_LSD = "Oz295dKFLKeJSkxpryem89"
-
-# Profile URL (your Facebook profile username/ID)
-PROFILE_REFERER = "https://www.facebook.com/ansu.rijal.399/"
-
-# Other dynamic values (may need updating)
 DOC_ID = "25117775041186361"
 JAZOEST = "25202"
 
-# Optional: Set to True to publish a story about bio update
 PUBLISH_STORY = False
 
-# ============================================
-# REQUEST SETUP
-# ============================================
-
 def update_facebook_bio(bio_text, publish_story=False):
-    """
-    Updates Facebook bio using GraphQL API
-    
-    Args:
-        bio_text (str): The new bio text
-        publish_story (bool): Whether to publish a story about the bio update
-    
-    Returns:
-        dict: Response from Facebook API
-    """
-    
     url = "https://www.facebook.com/api/graphql/"
     
-    # Get current timestamp
     timestamp = int(time.time() * 1000)
     
-    # Headers
     headers = {
         "accept": "*/*",
         "accept-language": "en-US,en;q=0.9",
@@ -70,10 +37,9 @@ def update_facebook_bio(bio_text, publish_story=False):
         "x-fb-friendly-name": "ProfileCometSetBioMutation",
         "x-fb-lsd": X_FB_LSD,
         "cookie": COOKIE,
-        "Referer": PROFILE_REFERER
+        "Referer": REFERER
     }
     
-    # Variables for the GraphQL mutation
     variables = {
         "input": {
             "attribution_id_v2": f"ProfileCometTimelineListViewRoot.react,comet.profile.timeline.list,via_cold_start,{timestamp},755453,190055527696468,,",
@@ -88,7 +54,6 @@ def update_facebook_bio(bio_text, publish_story=False):
         "useDefaultActor": False
     }
     
-    # Body parameters
     body_params = {
         "av": USER_ID,
         "__aaid": "0",
@@ -121,37 +86,28 @@ def update_facebook_bio(bio_text, publish_story=False):
         "doc_id": DOC_ID
     }
     
-    # Convert body params to URL-encoded string
     body = "&".join([f"{k}={v}" for k, v in body_params.items()])
     
     try:
         response = requests.post(url, headers=headers, data=body)
         response.raise_for_status()
-        
-        print("✅ Request sent successfully!")
+        print("Request sent successfully")
         print(f"Status Code: {response.status_code}")
-        print(f"Response: {response.text[:500]}...")  # Print first 500 chars
-        
+        print(f"Response: {response.text[:500]}")
         return response.json()
-    
     except requests.exceptions.RequestException as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         return None
 
-
 if __name__ == "__main__":
-    print("=" * 50)
-    print("Facebook Bio Update Script")
-    print("=" * 50)
-    print(f"\n📝 New Bio: {BIO_TEXT}")
-    print(f"👤 User ID: {USER_ID}")
-    print(f"📢 Publish Story: {PUBLISH_STORY}")
-    print("\n🚀 Sending request...")
-    print("-" * 50)
+    print(f"Bio: {BIO_TEXT}")
+    print(f"User ID: {USER_ID}")
+    print(f"Publish Story: {PUBLISH_STORY}")
+    print("Sending request...")
     
     result = update_facebook_bio(BIO_TEXT, PUBLISH_STORY)
     
     if result:
-        print("\n✅ Bio update completed!")
+        print("Bio update completed")
     else:
-        print("\n❌ Bio update failed. Check your tokens and cookies.")
+        print("Bio update failed")
